@@ -217,3 +217,9 @@ class Main:
 while(not win_con[0]):
 	display_board()
 	choose_spot(prev_small_spot, turn)
+
+
+
+pygame.init()
+
+WINDOW = [720, 720]
