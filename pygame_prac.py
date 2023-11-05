@@ -1,8 +1,10 @@
 import pygame
 import math
 
+#create pygame
 pygame.init()
 
+#initialize board
 window = [720, 720]
 clock = pygame.time.Clock()
 
@@ -18,8 +20,6 @@ sboards.fill((0, 0, 0, 0))
 
 #margin is 9
 #each small square is 222x222
-
-
 
 pygame.draw.line(lines, (0, 0, 0), [9 + 222 + 9, 9], [9 + 222 + 9, 711], width=5)
 pygame.draw.line(lines, (0, 0, 0), [27 + 444 + 9, 9], [27 + 444 + 9, 711], width=5)
@@ -39,6 +39,7 @@ for i in range(3):
 sboards.blit(lines, (0, 0))
 screen.blit(sboards, (0, 0))
 
+#run game
 run = True
 
 toggle = True
