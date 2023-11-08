@@ -9,7 +9,7 @@ import pygame
 """
 
 
-darkmode = "y"
+darkmode = "ns"
 if "y" in darkmode:
     BLACK = (255, 255, 255)
     WHITE = (0, 0, 0)

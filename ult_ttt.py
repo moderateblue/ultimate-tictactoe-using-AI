@@ -1,9 +1,8 @@
 import os
 import math
-import pygame
 import sys
 
-from const import *
+#represent the tic-tac-toe object with arr[9][9]
 
 #defines tic-tac-toe object
 class TicTacToe():
@@ -209,17 +208,7 @@ for i in range(9):
 	ult_board.append(TicTacToe(i))
 win_con = check_big_win(True)
 
-class Main:
-	def __init__(self):
-		self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
 #print("Welcome to Ultimate TicTacToe\n")
 while(not win_con[0]):
 	display_board()
 	choose_spot(prev_small_spot, turn)
-
-
-
-pygame.init()
-
-WINDOW = [720, 720]
