@@ -200,15 +200,22 @@ def check_big_win(winner):
 			return [True, '-']
 		return [False, 0]
 
-ult_board = []
+def run():
+	global ult_board 
+	ult_board = []
 
-turn = True
-prev_small_spot = 0
-for i in range(9):
-	ult_board.append(TicTacToe(i))
-win_con = check_big_win(True)
+	global turn
+	turn = True
+	global prev_small_spot
+	prev_small_spot = 0
+	for i in range(9):
+		ult_board.append(TicTacToe(i))
+	global win_con
+	win_con = check_big_win(True)
 
-#print("Welcome to Ultimate TicTacToe\n")
-while(not win_con[0]):
-	display_board()
-	choose_spot(prev_small_spot, turn)
+	#print("Welcome to Ultimate TicTacToe\n")
+	while(not win_con[0]):
+		display_board()
+		choose_spot(prev_small_spot, turn)
+
+run()
