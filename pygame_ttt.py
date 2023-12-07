@@ -1,5 +1,6 @@
 import pygame
-import math
+
+from pygame_ttt_funcs import TicTacToe
 
 #create pygame
 pygame.init()
@@ -9,8 +10,10 @@ window = [720 + 222, 720]
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode(window, pygame.RESIZABLE)
+pygame.display.set_caption("Ultimate TicTacToe")
 lines = pygame.Surface(window, pygame.SRCALPHA)
 sboards = pygame.Surface(window, pygame.SRCALPHA)
+pieces = pygame.Surface(window, pygame.SRCALPHA)
 
 #colors
 CYAN = (20, 189, 172)
@@ -24,7 +27,7 @@ grid_colors = [YELLOW, YELLOW, YELLOW,
                YELLOW, YELLOW, YELLOW,
                YELLOW, YELLOW, YELLOW]
 
-
+'''-------------------Game Code-------------------'''
 
 #initialize global game variables
 
@@ -39,7 +42,25 @@ turn = True
 #prev_small_spot actual range = (1-9)
 prev_small_spot = 0
 
+'''-----------------------------------------------'''
 
+def draw_o(big, small):
+    circlex = ((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 37
+    circley = ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 37
+    pygame.draw.circle(pieces, WHITE, (circlex, circley), 35, 10)
+
+def draw_x(big, small):
+    #tl = top left, br = bottom right
+    #tr = top right, bl = bottom left
+
+    tl = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9)
+    br = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 74 - 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 74)
+    
+    tr = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 74 - 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9)
+    bl = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 74)
+
+    pygame.draw.line(pieces, GRAY, tl, br, 10)
+    pygame.draw.line(pieces, GRAY, tr, bl, 10)
 
 #run game
 run = True
@@ -60,24 +81,35 @@ while run:
                 y = pos[1]
 
                 if ((x > 9 and x < 231) or (x > 249 and x < 471) or (x > 489 and x < 711)) and ((y > 9 and y < 231) or (y > 249 and y < 471) or (y > 489 and y < 711)):
-                    xs = x // 240
-                    ys = y // 240
-                    print(xs, ys)
+                    big_x = x // 240
+                    big_y = y // 240
+                    print(big_x, big_y)
                     x = x % 240 - 9
                     y = y % 240 - 9
-                    xss = x // 74
-                    yss = y // 74
-                    print(xss, yss)
-                    print((xs + 1) + ys * 3, (xss + 1) + yss * 3)
+                    small_x = x // 74
+                    small_y = y // 74
+                    print(small_x, small_y)
+                    global large_coord, small_coord
+                    large_coord = big_x + 1 + big_y * 3
+                    small_coord = small_x + 1 + small_y * 3
+                    print(large_coord, small_coord)
+
+                    if turn:
+                        draw_x(large_coord, small_coord)
+                    else:
+                        draw_o(large_coord, small_coord)
                 
                 if toggle:
-                    grid_colors[8] = AQUAMARINE
+                    grid_colors[0:8] = [AQUAMARINE for x in grid_colors[0:8]]
+                    print(grid_colors)
                     toggle = not toggle
                 else:
-                    grid_colors[8] = YELLOW
+                    grid_colors[0:8] = [YELLOW for x in grid_colors[0:8]]
                     toggle = not toggle
-                sboards.blit(lines, (0, 0))
-                screen.blit(sboards, (0, 0))
+                turn = not turn
+
+        sboards.blit(lines, (0, 0))
+        screen.blit(sboards, (0, 0))
 
     screen.fill(CYAN)
     lines.fill((0, 0, 0, 0))
@@ -88,7 +120,7 @@ while run:
     #draws screen
 
     #margin is 9
-    #each square is 222x222
+    #each square is 222x222 (no margin)
     #each small square is 74 (no margin)
     #ex first row of pixels is 9 + 222 (= 74 * 3) + 9 + 9 + 222 + 9 + 9 + 222 + 9 = 720
 
@@ -105,8 +137,18 @@ while run:
             pygame.draw.line(lines, BLACK, [9 + 240 * i, 9 + 74 + 240 * j], [9 + 240 * i + 222, 9 + 74 + 240 * j], width=3)
             pygame.draw.line(lines, BLACK, [9 + 240 * i, 9 + 148 + 240 * j], [9 + 240 * i + 222, 9 + 148 + 240 * j], width=3)   
 
+    
+    font = pygame.font.Font("Product Sans Regular.ttf", 50)
+    text = font.render("X's turn" if turn == True else "O's turn", True, GRAY)
+    textRect = text.get_rect()
+
+    # set the center of the rectangular object.
+    textRect.center = (720 + 111, 720 // 2)
+
+    sboards.blit(pieces, (0, 0))
     sboards.blit(lines, (0, 0))
     screen.blit(sboards, (0, 0))
+    screen.blit(text, textRect)
 
     clock.tick(60)
     pygame.display.flip()
