@@ -17,15 +17,17 @@ pieces = pygame.Surface(window, pygame.SRCALPHA)
 
 #colors
 CYAN = (20, 189, 172)
-AQUAMARINE = (3, 252, 182)
+DARKCYAN = (6, 84, 76)
+AQUAMARINE = (8, 156, 140)
 BLACK = (0, 0, 0)
 GRAY = (84, 84, 84)
 WHITE = (242, 235, 211)
-YELLOW = (239, 255, 161)
+TRANSPARENT = (0, 0, 0, 0)
 
-grid_colors = [YELLOW, YELLOW, YELLOW,
-               YELLOW, YELLOW, YELLOW,
-               YELLOW, YELLOW, YELLOW]
+
+grid_colors = [AQUAMARINE, AQUAMARINE, AQUAMARINE,
+               AQUAMARINE, AQUAMARINE, AQUAMARINE,
+               AQUAMARINE, AQUAMARINE, AQUAMARINE]
 
 '''-------------------Game Code-------------------'''
 
@@ -47,17 +49,20 @@ prev_small_spot = 0
 def draw_o(big, small):
     circlex = ((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 37
     circley = ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 37
-    pygame.draw.circle(pieces, WHITE, (circlex, circley), 35, 10)
+    pygame.draw.circle(pieces, WHITE, (circlex, circley), 30, 10)
 
 def draw_x(big, small):
     #tl = top left, br = bottom right
     #tr = top right, bl = bottom left
 
-    tl = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9)
-    br = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 74 - 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 74)
+    # +-5 is to make sure the line drew doesn't exceed the square
+    # +-7 is to make the overall size smaller
+
+    tl = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + (5 + 7) , ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + (7))
+    br = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 74 - (5 + 7), ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 74 - (7))
     
-    tr = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 74 - 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9)
-    bl = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 5, ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 74)
+    tr = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 74 - (5 + 7), ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + (7))
+    bl = (((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 5 + (7), ((big - 1) // 3) * 240 + ((small - 1) // 3) * 74 + 9 + 74 - (7))
 
     pygame.draw.line(pieces, GRAY, tl, br, 10)
     pygame.draw.line(pieces, GRAY, tr, bl, 10)
@@ -100,11 +105,11 @@ while run:
                         draw_o(large_coord, small_coord)
                 
                 if toggle:
-                    grid_colors[0:8] = [AQUAMARINE for x in grid_colors[0:8]]
+                    grid_colors[0:8] = [TRANSPARENT for x in grid_colors[0:8]]
                     print(grid_colors)
                     toggle = not toggle
                 else:
-                    grid_colors[0:8] = [YELLOW for x in grid_colors[0:8]]
+                    grid_colors[0:8] = [AQUAMARINE for x in grid_colors[0:8]]
                     toggle = not toggle
                 turn = not turn
 
@@ -124,18 +129,18 @@ while run:
     #each small square is 74 (no margin)
     #ex first row of pixels is 9 + 222 (= 74 * 3) + 9 + 9 + 222 + 9 + 9 + 222 + 9 = 720
 
-    pygame.draw.line(lines, BLACK, [9 + 222 + 9, 9], [9 + 222 + 9, 711], width=5)
-    pygame.draw.line(lines, BLACK, [27 + 444 + 9, 9], [27 + 444 + 9, 711], width=5)
-    pygame.draw.line(lines, BLACK, [9, 9 + 222 + 9], [711, 9 + 222 + 9], width=5)
-    pygame.draw.line(lines, BLACK, [9, 27 + 444 + 9], [711, 27 + 444 + 9], width=5)
+    pygame.draw.line(lines, DARKCYAN, [9 + 222 + 9, 9], [9 + 222 + 9, 711], width=5)
+    pygame.draw.line(lines, DARKCYAN, [27 + 444 + 9, 9], [27 + 444 + 9, 711], width=5)
+    pygame.draw.line(lines, DARKCYAN, [9, 9 + 222 + 9], [711, 9 + 222 + 9], width=5)
+    pygame.draw.line(lines, DARKCYAN, [9, 27 + 444 + 9], [711, 27 + 444 + 9], width=5)
 
     for i in range(3):
         for j in range(3):
             pygame.draw.rect(sboards, grid_colors[(i+1) * (j+1) - 1], [9 + 18 * j + 222 * j, 9 + 18 * i + 222 * i, 222, 222])
-            pygame.draw.line(lines, BLACK, [9 + 74 + 240 * j, 9 + 240 * i], [9 + 74 + 240 * j, 9 + 240 * i + 222], width=3)
-            pygame.draw.line(lines, BLACK, [9 + 148 + 240 * j, 9 + 240 * i], [9 + 148 + 240 * j, 9 + 240 * i + 222], width=3)
-            pygame.draw.line(lines, BLACK, [9 + 240 * i, 9 + 74 + 240 * j], [9 + 240 * i + 222, 9 + 74 + 240 * j], width=3)
-            pygame.draw.line(lines, BLACK, [9 + 240 * i, 9 + 148 + 240 * j], [9 + 240 * i + 222, 9 + 148 + 240 * j], width=3)   
+            pygame.draw.line(lines, DARKCYAN, [9 + 74 + 240 * j, 9 + 240 * i], [9 + 74 + 240 * j, 9 + 240 * i + 222], width=3)
+            pygame.draw.line(lines, DARKCYAN, [9 + 148 + 240 * j, 9 + 240 * i], [9 + 148 + 240 * j, 9 + 240 * i + 222], width=3)
+            pygame.draw.line(lines, DARKCYAN, [9 + 240 * i, 9 + 74 + 240 * j], [9 + 240 * i + 222, 9 + 74 + 240 * j], width=3)
+            pygame.draw.line(lines, DARKCYAN, [9 + 240 * i, 9 + 148 + 240 * j], [9 + 240 * i + 222, 9 + 148 + 240 * j], width=3)   
 
     
     font = pygame.font.Font("Product Sans Regular.ttf", 50)
