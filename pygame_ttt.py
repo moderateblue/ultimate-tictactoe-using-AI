@@ -1,6 +1,6 @@
 import pygame
 
-from pygame_ttt_funcs import TicTacToe
+from tic_tac_toe_class import TicTacToe
 
 #create pygame
 pygame.init()
@@ -43,6 +43,78 @@ turn = True
 #prev_small_spot = 0 if its wherever
 #prev_small_spot actual range = (1-9)
 prev_small_spot = 0
+
+def check_big_win():
+    winner = 'X'
+
+    #rows
+    for i in range(0, 9, 3):
+        if (ult_board[i].won_by == winner) and (ult_board[i + 1].won_by == winner) and (ult_board[i + 2].won_by == winner):
+            return (True, winner)
+
+    #columns
+    for i in range(3):
+        if (ult_board[i].won_by == winner) and (ult_board[i + 3].won_by == winner) and (ult_board[i + 6].won_by == winner):
+            return (True, winner)
+
+    #top left to bottom right
+    if (ult_board[0].won_by == winner and ult_board[4].won_by == winner and ult_board[8].won_by == winner):
+        return (True, winner)
+
+    #top right to bottom left
+    elif (ult_board[2].won_by == winner and ult_board[4].won_by == winner and ult_board[6].won_by == winner):
+        return (True, winner)
+    
+    winner = 'Y'
+
+    #rows
+    for i in range(0, 9, 3):
+        if (ult_board[i].won_by == winner) and (ult_board[i + 1].won_by == winner) and (ult_board[i + 2].won_by == winner):
+            return (True, winner)
+
+    #columns
+    for i in range(3):
+        if (ult_board[i].won_by == winner) and (ult_board[i + 3].won_by == winner) and (ult_board[i + 6].won_by == winner):
+            return (True, winner)
+
+    #top left to bottom right
+    if (ult_board[0].won_by == winner and ult_board[4].won_by == winner and ult_board[8].won_by == winner):
+        return (True, winner)
+
+    #top right to bottom left
+    elif (ult_board[2].won_by == winner and ult_board[4].won_by == winner and ult_board[6].won_by == winner):
+        return (True, winner)
+
+    else:
+        global out_full
+        out_full = False
+        for i in range(9):
+            if (ult_board[i].won_by != 0):
+                out_full = True
+            else:
+                out_full = False
+                break
+        if (out_full):
+            return (True, '-')
+        return (False, 0)
+
+def choose_big_spot(prev_small_spot):
+    pass
+
+def choose_small_spot(big, small):
+    if (ult_board[big - 1].get(small-1) == ' ' and ult_board[big - 1].won_by == 0):
+        ult_board[big - 1].change(small-1, 'X' if turn else 'O')
+        ult_board[big - 1].check_small_win('X' if turn else 'O')
+        global win_con
+        win_con = check_big_win()
+        if (win_con[0] and win_con[1] != '-'):
+            print(win_con[1], "has won the game!")
+            return
+        elif (win_con[0] and win_con[1] == '-'):
+            print("it's a tie!")
+            return
+        global prev_small_spot
+        prev_small_spot = small
 
 '''-----------------------------------------------'''
 
@@ -103,10 +175,11 @@ while run:
                         draw_x(large_coord, small_coord)
                     else:
                         draw_o(large_coord, small_coord)
+                    
+                    prev_small_spot = small_coord
                 
                 if toggle:
                     grid_colors[0:8] = [TRANSPARENT for x in grid_colors[0:8]]
-                    print(grid_colors)
                     toggle = not toggle
                 else:
                     grid_colors[0:8] = [AQUAMARINE for x in grid_colors[0:8]]

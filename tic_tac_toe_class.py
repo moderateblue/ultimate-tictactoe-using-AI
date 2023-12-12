@@ -52,6 +52,3 @@ class TicTacToe():
                     break
             if (full):
                 self.won_by = '-'
-
-def choose_small_spot():
-    pass
