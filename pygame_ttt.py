@@ -116,7 +116,7 @@ def choose_small_spot(big, small):
         global prev_small_spot
         prev_small_spot = small
 
-'''-----------------------------------------------'''
+'''^^^^^^^^^^^^^^^^^^^Game Code^^^^^^^^^^^^^^^^^^^'''
 
 def draw_o(big, small):
     circlex = ((big - 1) % 3) * 240 + ((small - 1) % 3) * 74 + 9 + 37
@@ -141,9 +141,6 @@ def draw_x(big, small):
 
 #run game
 run = True
-
-#test toggle
-toggle = True
 
 while run:
     for event in pygame.event.get():
@@ -171,20 +168,34 @@ while run:
                     small_coord = small_x + 1 + small_y * 3
                     print(large_coord, small_coord)
 
+                    #large and small coord start at 1
+                        #necessary for determining where to draw
+                        #but ult_board and array index start at 0
                     if turn:
-                        draw_x(large_coord, small_coord)
+                        if (large_coord == prev_small_spot or prev_small_spot == 0) and ult_board[large_coord-1].get(small_coord-1) == ' ':
+                            draw_x(large_coord, small_coord)
+                            #turn = True (X) False (O)
+                            ult_board[large_coord-1].change(small_coord-1, True)
+                            turn = not turn
+                            prev_small_spot = small_coord
+                        
                     else:
-                        draw_o(large_coord, small_coord)
+                        if (large_coord == prev_small_spot or prev_small_spot == 0) and ult_board[large_coord-1].get(small_coord-1) == ' ':
+                            draw_o(large_coord, small_coord)
+                            #turn = True (X) False (O)
+                            ult_board[large_coord-1].change(small_coord-1, False)
+                            turn = not turn
+                            prev_small_spot = small_coord
                     
-                    prev_small_spot = small_coord
-                
-                if toggle:
-                    grid_colors[0:8] = [TRANSPARENT for x in grid_colors[0:8]]
-                    toggle = not toggle
-                else:
-                    grid_colors[0:8] = [AQUAMARINE for x in grid_colors[0:8]]
-                    toggle = not toggle
-                turn = not turn
+                    print("prev_small_spot", prev_small_spot)
+                    
+                    
+                    if prev_small_spot == 0:
+                        grid_colors[0:9] = [AQUAMARINE for x in grid_colors[0:9]]
+                    else:
+                        grid_colors[0:9] = [TRANSPARENT for x in grid_colors[0:9]]
+                        grid_colors[prev_small_spot-1] = AQUAMARINE
+                        print(grid_colors)
 
         sboards.blit(lines, (0, 0))
         screen.blit(sboards, (0, 0))
@@ -209,7 +220,7 @@ while run:
 
     for i in range(3):
         for j in range(3):
-            pygame.draw.rect(sboards, grid_colors[(i+1) * (j+1) - 1], [9 + 18 * j + 222 * j, 9 + 18 * i + 222 * i, 222, 222])
+            pygame.draw.rect(sboards, grid_colors[i * 3 + j], [9 + 18 * j + 222 * j, 9 + 18 * i + 222 * i, 222, 222])
             pygame.draw.line(lines, DARKCYAN, [9 + 74 + 240 * j, 9 + 240 * i], [9 + 74 + 240 * j, 9 + 240 * i + 222], width=3)
             pygame.draw.line(lines, DARKCYAN, [9 + 148 + 240 * j, 9 + 240 * i], [9 + 148 + 240 * j, 9 + 240 * i + 222], width=3)
             pygame.draw.line(lines, DARKCYAN, [9 + 240 * i, 9 + 74 + 240 * j], [9 + 240 * i + 222, 9 + 74 + 240 * j], width=3)
