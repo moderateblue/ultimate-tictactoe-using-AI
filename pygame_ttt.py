@@ -205,7 +205,7 @@ while run:
                     print("prev_small_spot", prev_small_spot)
                     
                     if prev_small_spot == 0:
-                        grid_colors = [TRANSPARENT if ult_board[x].won_by in {'X', 'O', '-'} else AQUAMARINE for x in range(9)]
+                        grid_colors = [TRANSPARENT if ult_board[x].won_by else AQUAMARINE for x in range(9)]
                     else:
                         grid_colors = [TRANSPARENT for x in range(9)]
                         grid_colors[prev_small_spot-1] = AQUAMARINE
