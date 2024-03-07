@@ -65,7 +65,7 @@ def check_big_win():
     elif (ult_board[2].won_by == winner and ult_board[4].won_by == winner and ult_board[6].won_by == winner):
         return (True, winner)
     
-    winner = 'Y'
+    winner = 'O'
 
     #rows
     for i in range(0, 9, 3):
@@ -142,6 +142,8 @@ def draw_x(big, small):
 #run game
 run = True
 
+big_win = (False, 0)
+
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -172,30 +174,49 @@ while run:
                         #necessary for determining where to draw
                         #but ult_board and array index start at 0
                     if turn:
-                        if (large_coord == prev_small_spot or prev_small_spot == 0) and ult_board[large_coord-1].get(small_coord-1) == ' ':
+                        if (large_coord == prev_small_spot or prev_small_spot == 0) and ult_board[large_coord-1].get(small_coord-1) == ' ' and not ult_board[large_coord-1].won_by:
                             draw_x(large_coord, small_coord)
                             #turn = True (X) False (O)
                             ult_board[large_coord-1].change(small_coord-1, True)
-                            turn = not turn
+                            ult_board[large_coord-1].check_small_win(True)
+
+                            if ult_board[large_coord-1].won_by:
+                                print("board complete")
                             prev_small_spot = small_coord
+
+                            turn = not turn
                         
                     else:
-                        if (large_coord == prev_small_spot or prev_small_spot == 0) and ult_board[large_coord-1].get(small_coord-1) == ' ':
+                        if (large_coord == prev_small_spot or prev_small_spot == 0) and ult_board[large_coord-1].get(small_coord-1) == ' ' and not ult_board[large_coord-1].won_by:
                             draw_o(large_coord, small_coord)
                             #turn = True (X) False (O)
                             ult_board[large_coord-1].change(small_coord-1, False)
-                            turn = not turn
+                            ult_board[large_coord-1].check_small_win(False)
+
+                            if ult_board[large_coord-1].won_by:
+                                print("board complete")
                             prev_small_spot = small_coord
+
+                            turn = not turn
+                    
+                    if ult_board[prev_small_spot-1].won_by:
+                        prev_small_spot = 0
                     
                     print("prev_small_spot", prev_small_spot)
                     
-                    
                     if prev_small_spot == 0:
-                        grid_colors[0:9] = [AQUAMARINE for x in grid_colors[0:9]]
+                        grid_colors = [TRANSPARENT if ult_board[x].won_by in {'X', 'O', '-'} else AQUAMARINE for x in range(9)]
                     else:
-                        grid_colors[0:9] = [TRANSPARENT for x in grid_colors[0:9]]
+                        grid_colors = [TRANSPARENT for x in range(9)]
                         grid_colors[prev_small_spot-1] = AQUAMARINE
                         print(grid_colors)
+                    print(grid_colors)
+                
+                big_win = check_big_win()
+                if big_win[0]:
+                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+                    grid_colors = [TRANSPARENT for x in range(9)]
+
 
         sboards.blit(lines, (0, 0))
         screen.blit(sboards, (0, 0))
@@ -228,7 +249,13 @@ while run:
 
     
     font = pygame.font.Font("Product Sans Regular.ttf", 50)
-    text = font.render("X's turn" if turn == True else "O's turn", True, GRAY)
+    text = None
+    if big_win[0] and big_win[1] in {"X", "O"}:
+        text = font.render(f"{big_win[1]} won!", True, GRAY)
+    elif big_win[0]:
+        text = font.render("Tie!", True, GRAY)
+    else:
+        text = font.render("X's turn" if turn == True else "O's turn", True, GRAY)
     textRect = text.get_rect()
 
     # set the center of the rectangular object.
