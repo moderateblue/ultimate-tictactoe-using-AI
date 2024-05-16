@@ -139,6 +139,20 @@ def draw_x(big, small):
     pygame.draw.line(pieces, GRAY, tl, br, 10)
     pygame.draw.line(pieces, GRAY, tr, bl, 10)
 
+def calc_coords(x, y):
+    big_x = x // 240
+    big_y = y // 240
+    #print(big_x, big_y)
+    x = x % 240 - 9
+    y = y % 240 - 9
+    small_x = x // 74
+    small_y = y // 74
+    #print(small_x, small_y)
+    large_coord = big_x + 1 + big_y * 3
+    small_coord = small_x + 1 + small_y * 3
+    #print(large_coord, small_coord)
+    return large_coord, small_coord
+
 #run game
 run = True
 
@@ -157,18 +171,9 @@ while run:
                 y = pos[1]
 
                 if ((x > 9 and x < 231) or (x > 249 and x < 471) or (x > 489 and x < 711)) and ((y > 9 and y < 231) or (y > 249 and y < 471) or (y > 489 and y < 711)):
-                    big_x = x // 240
-                    big_y = y // 240
-                    print(big_x, big_y)
-                    x = x % 240 - 9
-                    y = y % 240 - 9
-                    small_x = x // 74
-                    small_y = y // 74
-                    print(small_x, small_y)
+                    
                     global large_coord, small_coord
-                    large_coord = big_x + 1 + big_y * 3
-                    small_coord = small_x + 1 + small_y * 3
-                    print(large_coord, small_coord)
+                    large_coord, small_coord = calc_coords(x, y)
 
                     #large and small coord start at 1
                         #necessary for determining where to draw
@@ -216,10 +221,6 @@ while run:
                 if big_win[0]:
                     pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                     grid_colors = [TRANSPARENT for x in range(9)]
-
-
-        sboards.blit(lines, (0, 0))
-        screen.blit(sboards, (0, 0))
 
     screen.fill(CYAN)
     lines.fill((0, 0, 0, 0))
