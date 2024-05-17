@@ -1,6 +1,4 @@
 import os
-import math
-import sys
 
 #represent the tic-tac-toe object with arr[9][9]
 
