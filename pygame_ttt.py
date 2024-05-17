@@ -24,25 +24,39 @@ GRAY = (84, 84, 84)
 WHITE = (242, 235, 211)
 TRANSPARENT = (0, 0, 0, 0)
 
+def reset():
+    global grid_colors
+    grid_colors = [AQUAMARINE, AQUAMARINE, AQUAMARINE,
+                   AQUAMARINE, AQUAMARINE, AQUAMARINE,
+                   AQUAMARINE, AQUAMARINE, AQUAMARINE]
+    
+    global ult_board
+    ult_board = []
+    for i in range(9):
+        ult_board.append(TicTacToe(i))
+    
+    global turn
+    turn = True
 
-grid_colors = [AQUAMARINE, AQUAMARINE, AQUAMARINE,
-               AQUAMARINE, AQUAMARINE, AQUAMARINE,
-               AQUAMARINE, AQUAMARINE, AQUAMARINE]
+    global prev_small_spot
+    prev_small_spot = 0
+    
+    global pieces
+    pieces = pygame.Surface(window, pygame.SRCALPHA)
 
 '''-------------------Game Code-------------------'''
 
 #initialize global game variables
-
-ult_board = []
-for i in range(9):
-    ult_board.append(TicTacToe(i))
+# ult_board = []
+# for i in range(9):
+#     ult_board.append(TicTacToe(i))
 
 #turn = True (X) False (O)
-turn = True
 
 #prev_small_spot = 0 if its wherever
 #prev_small_spot actual range = (1-9)
-prev_small_spot = 0
+
+reset()
 
 def check_big_win():
     winner = 'X'
@@ -155,10 +169,20 @@ def calc_coords(x, y):
 
 #run game
 run = True
+#game active (no win or draw yet)
+game = True
 
 big_win = (False, 0)
 
 while run:
+    font = pygame.font.Font("Product Sans Regular.ttf", 50)
+
+    #finish button
+    r_text = font.render("Restart", True, GRAY)
+    r_textRect = r_text.get_rect()
+    r_textRect.center = (720 + 111, 720 // 2 + 222)
+    #worried about blocking mouse clicks when game ends
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -170,7 +194,7 @@ while run:
                 x = pos[0]
                 y = pos[1]
 
-                if ((x > 9 and x < 231) or (x > 249 and x < 471) or (x > 489 and x < 711)) and ((y > 9 and y < 231) or (y > 249 and y < 471) or (y > 489 and y < 711)):
+                if game == True and ((x > 9 and x < 231) or (x > 249 and x < 471) or (x > 489 and x < 711)) and ((y > 9 and y < 231) or (y > 249 and y < 471) or (y > 489 and y < 711)):
                     
                     global large_coord, small_coord
                     large_coord, small_coord = calc_coords(x, y)
@@ -216,10 +240,15 @@ while run:
                         grid_colors[prev_small_spot-1] = AQUAMARINE
                         print(grid_colors)
                     print(grid_colors)
-                
+
+                elif x >= 756 and x <= 910 and y >= 565 and y <= 601:
+                    game = True
+                    reset()
+
                 big_win = check_big_win()
                 if big_win[0]:
-                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+                    game = False
+                    #pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                     grid_colors = [TRANSPARENT for x in range(9)]
 
     screen.fill(CYAN)
@@ -249,7 +278,6 @@ while run:
             pygame.draw.line(lines, DARKCYAN, [9 + 240 * i, 9 + 148 + 240 * j], [9 + 240 * i + 222, 9 + 148 + 240 * j], width=3)   
 
     
-    font = pygame.font.Font("Product Sans Regular.ttf", 50)
     text = None
     if big_win[0] and big_win[1] in {"X", "O"}:
         text = font.render(f"{big_win[1]} won!", True, GRAY)
@@ -266,6 +294,7 @@ while run:
     sboards.blit(lines, (0, 0))
     screen.blit(sboards, (0, 0))
     screen.blit(text, textRect)
+    screen.blit(r_text, r_textRect)
 
     clock.tick(60)
     pygame.display.flip()
