@@ -23,7 +23,7 @@ referenced [Shayak Banerjee's Medium Article](https://medium.com/@shayak_89588/p
 
 <br>
 
-### <ins>Main file</ins> is pygame_ttt.py
+### <ins>Main file</ins> is pygame_ttt_AI.py
 
 <br>
 
