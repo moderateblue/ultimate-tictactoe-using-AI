@@ -17,7 +17,7 @@ referenced [Shayak Banerjee's Medium Article](https://medium.com/@shayak_89588/p
 **current phase of development: implementing AI**
 > ~~determining the model/algorithm to use for the agent~~
 
-> ~~implementing a neural network model~~
+> implementing a neural network model
 
 > train the neural network model
 
