@@ -1,5 +1,5 @@
 # ultimate tictactoe using AI
-WIP project (basically done, the AI is not as good as I like it to be but it works I think)
+WIP project (I need to redo the AI)
 
 referenced [r-3than's project](https://github.com/r-3than/Ultimate-tic-tac-toe/tree/master) to learn pygame
 
